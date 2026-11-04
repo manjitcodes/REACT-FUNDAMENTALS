@@ -30,14 +30,6 @@
 - Modal fits mobile viewport: Fill after testing
 - Form fields remain usable: Fill after testing
 
-## Issues Found
-
-Write down any accessibility or responsive issues you discovered.
-
-## Fixes Applied
-
-Describe the changes you made to fix those issues.
-
 ## Conclusion
 
 All five components were tested using keyboard-only navigation
