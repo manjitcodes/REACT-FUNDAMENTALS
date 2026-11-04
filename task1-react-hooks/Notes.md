@@ -1,0 +1,3 @@
+**useMemo:** In an e-commerce application displaying thousands of products, I would use useMemo to cache the filtered product list so that changing an unrelated UI state, such as opening a sidebar, doesn't require filtering all products again.
+
+**useCallback:** In a dashboard, I would use useCallback for an event handler passed to a child component wrapped in React.memo, so that unrelated parent state changes don't create a new function reference and unnecessarily re-render the child.
