@@ -54,7 +54,7 @@ p[role="status"] {
 } */
 
 
-.form-group {
+/* .form-group {
   display: flex;
   flex-direction: column;
   gap: 7px;
@@ -86,4 +86,106 @@ p[role="status"] {
 
 form button {
   margin-top: 5px;
+} */
+
+
+
+/* Button base styles */
+.btn {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+/* Primary variant */
+.btn-primary {
+  background: #2563eb;
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+/* Secondary variant */
+.btn-secondary {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #d1d5db;
+}
+
+/* Keyboard focus indicator */
+.btn:focus-visible,
+.theme-button:focus-visible {
+  outline: 3px solid #f59e0b;
+  outline-offset: 3px;
+}
+
+/* Genuine disabled appearance */
+.btn:disabled {
+  background: #9ca3af;
+  color: #f3f4f6;
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+
+.theme-container {
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.theme-container.light {
+  background: #f9fafb;
+  color: #111827;
+}
+
+.theme-container.dark {
+  background: #1f2937;
+  color: #f9fafb;
+}
+
+.navigation {
+  padding: 15px;
+  margin: 15px 0;
+  border: 1px solid #9ca3af;
+  border-radius: 8px;
+}
+
+.theme-button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.theme-status {
+  padding: 15px;
+  margin-top: 15px;
+  border-radius: 8px;
+}
+
+.theme-status.light {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.theme-status.dark {
+  background: #374151;
+  color: white;
+}
+
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
 }
