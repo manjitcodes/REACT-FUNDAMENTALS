@@ -28,7 +28,6 @@
 - Desktop viewport: 1440px
 - No horizontal overflow: Fill after testing
 - Modal fits mobile viewport: Fill after testing
-- Form fields remain usable: Fill after testings.
 
 ## Conclusion
 
