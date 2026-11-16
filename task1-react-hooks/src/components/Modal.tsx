@@ -1,4 +1,5 @@
-import { useEffect, useRef, type ReactNode } from "react";
+
+import { useEffect, useId, useRef, type ReactNode } from "react";
 
 type ModalProps = {
   isOpen: boolean;
@@ -10,23 +11,25 @@ type ModalProps = {
 function Modal({ isOpen, onClose, title, children }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const previousFocus = useRef<HTMLElement | null>(null);
+  const titleId = useId();
 
-  // Move focus into the modal and restore it when the modal closes.
+  // Move focus into the modal and restore it when closed.
   useEffect(() => {
-    if (isOpen) {
-      previousFocus.current =
-        document.activeElement instanceof HTMLElement
-          ? document.activeElement
-          : null;
-
-      modalRef.current?.focus();
-    } else if (previousFocus.current) {
-      previousFocus.current.focus();
+    if (!isOpen) {
+      previousFocus.current?.focus();
       previousFocus.current = null;
+      return;
     }
+
+    previousFocus.current =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+
+    modalRef.current?.focus();
   }, [isOpen]);
 
-  // Handle Escape and trap Tab / Shift+Tab.
+  // Handle Escape and keep keyboard focus inside the modal.
   useEffect(() => {
     if (!isOpen) return;
 
@@ -42,24 +45,26 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
       const modal = modalRef.current;
       if (!modal) return;
 
-      const focusableElements = modal.querySelectorAll<HTMLElement>(
-        [
-          "a[href]",
-          "button:not(:disabled)",
-          "input:not(:disabled)",
-          "select:not(:disabled)",
-          "textarea:not(:disabled)",
-          '[tabindex]:not([tabindex="-1"])',
-        ].join(",")
-      );
+      const selector = [
+        "a[href]",
+        "area[href]",
+        "button:not(:disabled)",
+        'input:not(:disabled):not([type="hidden"])',
+        "select:not(:disabled)",
+        "textarea:not(:disabled)",
+        '[contenteditable="true"]',
+        '[tabindex]:not([tabindex="-1"])',
+      ].join(",");
 
-      const elements = Array.from(focusableElements).filter(
+      const elements = Array.from(
+        modal.querySelectorAll<HTMLElement>(selector)
+      ).filter(
         (element) =>
           element.getAttribute("aria-hidden") !== "true" &&
           element.getClientRects().length > 0
       );
 
-      // If there are no focusable controls, keep focus on the dialog.
+      // If no controls exist, keep focus on the dialog.
       if (elements.length === 0) {
         event.preventDefault();
         modal.focus();
@@ -70,20 +75,26 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
       const lastElement = elements[elements.length - 1];
       const activeElement = document.activeElement;
 
-      // Shift+Tab from the first element moves to the last.
+      // If focus is outside the dialog's controls, bring it back.
+      if (
+        activeElement === modal ||
+        !elements.includes(activeElement as HTMLElement)
+      ) {
+        event.preventDefault();
+        (event.shiftKey ? lastElement : firstElement).focus();
+        return;
+      }
+
+      // Shift + Tab from the first control goes to the last.
       if (event.shiftKey && activeElement === firstElement) {
         event.preventDefault();
         lastElement.focus();
       }
-      // Tab from the last element moves to the first.
-      else if (!event.shiftKey && activeElement === lastElement) {
+
+      // Tab from the last control goes to the first.
+      if (!event.shiftKey && activeElement === lastElement) {
         event.preventDefault();
         firstElement.focus();
-      }
-      // If focus is on the dialog itself, handle both directions.
-      else if (activeElement === modal) {
-        event.preventDefault();
-        (event.shiftKey ? lastElement : firstElement).focus();
       }
     }
 
@@ -103,17 +114,21 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
         className="modal"
         role="dialog"
         aria-modal="true"
-        aria-labelledby="modal-title"
+        aria-labelledby={titleId}
         tabIndex={-1}
       >
-        <h2 id="modal-title">{title}</h2>
+        <h2 id={titleId}>{title}</h2>
 
         <div className="modal-content">
           {children}
         </div>
 
         <div className="modal-actions">
-          <button type="button" onClick={onClose} className="btn btn-secondary">
+          <button
+            type="button"
+            onClick={onClose}
+            className="btn btn-secondary"
+          >
             Close
           </button>
         </div>
